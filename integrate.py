@@ -1,8 +1,9 @@
 import numpy as np
 import numpy_indexed as npi
 import settings as g
+from scipy.spatial import distance
 
-def integrate(coords,data,dshape_hex8,gll_weights,elmt):
+def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
     """function to perform the integration for metric computation"""
     norm=0.0
     normx=0.0
@@ -12,6 +13,8 @@ def integrate(coords,data,dshape_hex8,gll_weights,elmt):
     divx=0.
     divy=0.
     divz=0.
+
+    f=open('eliminated_coords.vtk','w')
 
     #create integer versions of arrays to use in pulling out gll pts for each element
     data_round=np.rint(data)
@@ -29,6 +32,7 @@ def integrate(coords,data,dshape_hex8,gll_weights,elmt):
         #pull out geometric coordinates for this element
         elmt_coord_id=[j-1 for j in elmt[i_elmt]]
         elmt_coord=coordi[elmt_coord_id]
+
         #find corresponding gll pts for this element
         xmin=min(elmt_coord[:,0]);xmax=max(elmt_coord[:,0])
         ymin=min(elmt_coord[:,1]);ymax=max(elmt_coord[:,1])
@@ -47,9 +51,15 @@ def integrate(coords,data,dshape_hex8,gll_weights,elmt):
         dat_sorted=elmt_data[npi.argsort((elmt_data[:,0], elmt_data[:,1],elmt_data[:,2]))]
         func=dat_sorted[:,3:]
 
+        #if any gll pt is too close to fault, remove the element from the integration
+        eps=0.5*g.mesh_spacing/g.ngll
+        dist=distance.cdist(fault_pts,dat_sorted[:,0:3],'euclidean')
+        if (dist<eps).any():
+            f.write(elmt_coord)
+            continue
 
         for i_gll in range(g.ngll):
-            #specfem eliminates fault nodes before performing integration. Should this be done here too?
+
             #compute jacobian, its derivative and inverse
             jac=np.matmul(dshape_hex8[:,:,i_gll],elmt_coord)
             det_jac=np.linalg.det(jac)
@@ -68,6 +78,8 @@ def integrate(coords,data,dshape_hex8,gll_weights,elmt):
     norm_finaly=normy/divy
     norm_finalz=normz/divz
     norm_final=norm/div
+
+    f.close()
 
     return norm_finalx, norm_finaly, norm_finalz,norm_final
             

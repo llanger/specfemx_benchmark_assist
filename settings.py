@@ -11,3 +11,6 @@ global ngll
 ngll=0
 global ngllx
 ngllx=0
+
+global mesh_spacing
+mesh_spacing=0.0
