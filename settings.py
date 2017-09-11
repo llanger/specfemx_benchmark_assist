@@ -14,3 +14,5 @@ ngllx=0
 
 global mesh_spacing
 mesh_spacing=0.0
+global npatches
+npatches=0

@@ -14,6 +14,8 @@ def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
     divy=0.
     divz=0.
 
+    eps=1.0*g.mesh_spacing/g.ngll
+    print 'eps=', eps
     f=open('eliminated_coords.vtk','w')
 
     #create integer versions of arrays to use in pulling out gll pts for each element
@@ -52,10 +54,10 @@ def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
         func=dat_sorted[:,3:]
 
         #if any gll pt is too close to fault, remove the element from the integration
-        eps=0.5*g.mesh_spacing/g.ngll
         dist=distance.cdist(fault_pts,dat_sorted[:,0:3],'euclidean')
         if (dist<eps).any():
-            f.write(elmt_coord)
+            print "eliminated element #", i_elmt
+            np.savetxt(f,elmt_coord,fmt='%3.3f')
             continue
 
         for i_gll in range(g.ngll):

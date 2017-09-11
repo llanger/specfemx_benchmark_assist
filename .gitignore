@@ -1,1 +1,4 @@
 compare*
+
+#trash files
+*.pyc

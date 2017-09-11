@@ -2,7 +2,7 @@ import numpy as np
 import csv
 import settings as g
 
-def import_data(data_file,data_len,connectivity,coordx,coordy,coordz):
+def import_data(data_file,data_len,connectivity,coordx,coordy,coordz,faultfile):
     with open(data_file,'rb') as fin:
         freader = csv.reader(fin, delimiter=',')
         next(freader, None) #get rid of header line
@@ -15,6 +15,16 @@ def import_data(data_file,data_len,connectivity,coordx,coordy,coordz):
                 dat[i,j+6]=line[g.disp_sem_cols[j]]
             i+=1    
     print "finished reading csv data file"        
+    with open(faultfile,'rb') as fin:
+        freader = csv.reader(fin, delimiter=',')
+        next(freader, None) #get rid of header line
+        i=0
+        fault_pts=np.zeros((g.npatches,3))
+        for line in freader:
+            print line
+            fault_pts[i]=line
+            i+=1
+    print "finished reading fault sources file"    
     with open(connectivity,'rb') as fin:
         g.nelmt=int(fin.readline().strip())
         freader=csv.reader(fin, delimiter=' ')
@@ -48,4 +58,4 @@ def import_data(data_file,data_len,connectivity,coordx,coordy,coordz):
             i+=1
     print "finished reading connectivity and coord files"
 
-    return(dat,coords,elmt)    
+    return(dat,coords,elmt,fault_pts)    
