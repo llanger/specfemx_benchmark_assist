@@ -21,7 +21,6 @@ def import_data(data_file,data_len,connectivity,coordx,coordy,coordz,faultfile):
         i=0
         fault_pts=np.zeros((g.npatches,3))
         for line in freader:
-            print line
             fault_pts[i]=line
             i+=1
     print "finished reading fault sources file"    
