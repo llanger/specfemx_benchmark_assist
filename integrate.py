@@ -14,7 +14,7 @@ def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
     divy=0.
     divz=0.
 
-    eps=1.0*g.mesh_spacing/g.ngll
+    eps=0.5*g.mesh_spacing/(g.ngllx-1.)
     print 'eps=', eps
     f=open('eliminated_coords.vtk','w')
 
@@ -57,7 +57,7 @@ def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
         dist=distance.cdist(fault_pts,dat_sorted[:,0:3],'euclidean')
         if (dist<eps).any():
             print "eliminated element #", i_elmt
-            np.savetxt(f,elmt_coord,fmt='%3.3f')
+            np.savetxt(f,dat_sorted[:,0:3],fmt='%3.3f')
             continue
 
         for i_gll in range(g.ngll):
