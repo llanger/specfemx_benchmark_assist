@@ -2,6 +2,7 @@ import numpy as np
 import numpy_indexed as npi
 import settings as g
 from scipy.spatial import distance
+from math import sqrt
 
 def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
     """function to perform the integration for metric computation"""
@@ -14,7 +15,7 @@ def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
     divy=0.
     divz=0.
 
-    eps=0.5*g.mesh_spacing/(g.ngllx-1.)
+    eps=1.0*g.mesh_spacing/(g.ngllx-1.)
     print 'eps=', eps
     f=open('eliminated_coords.vtk','w')
 
@@ -76,10 +77,10 @@ def integrate(coords,data,fault_pts,dshape_hex8,gll_weights,elmt):
             normz=normz+det_jac*gll_weights[i_gll]*(func[i_gll,5]-func[i_gll,2])**2
             divz=divz+det_jac*gll_weights[i_gll]*(func[i_gll,5])**2
 
-    norm_finalx=normx/divx
-    norm_finaly=normy/divy
-    norm_finalz=normz/divz
-    norm_final=norm/div
+    norm_finalx=sqrt(normx/divx)
+    norm_finaly=sqrt(normy/divy)
+    norm_finalz=sqrt(normz/divz)
+    norm_final=sqrt(norm/div)
 
     f.close()
 
