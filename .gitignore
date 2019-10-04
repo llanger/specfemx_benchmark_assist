@@ -2,3 +2,7 @@ compare*
 
 #trash files
 *.pyc
+
+#example files
+compare_pylith.py
+compare_pylith_visco.py
