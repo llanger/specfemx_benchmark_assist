@@ -1,4 +1,4 @@
-# sem_visco_comparisons
+# specfemx_benchmark_assist
 
 
 Python program to calculate magnitude of displacement results from SPECFEMX. It integrates over the domain using gll quadrature.
